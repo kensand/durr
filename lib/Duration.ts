@@ -8,6 +8,9 @@ export class Duration {
   static hours = (num: number) => new Duration(Hour.toMillis(num));
   static days = (num: number) => new Duration(Day.toMillis(num));
 
+  static between = (start: Date, end: Date) =>
+    Duration.milliseconds(end.getTime() - start.getTime());
+
   static isDuration = (it: any): it is Duration => it.millis;
 
   public readonly add = (other: Duration | number) =>

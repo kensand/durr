@@ -13,7 +13,8 @@ const fiveDays = Duration.days(5); // 432000000 millis
 const fiveDaysMillis = 432000000;
 
 const epochDate = new Date(0);
-const date1 = new Date(fiveDaysMillis * 2);
+const date1 = new Date(fiveDaysMillis);
+const date2 = new Date(fiveDaysMillis * 2);
 
 test("add", () => {
   expect(oneMilli.add(fiveDays).millis).toBe(1 + fiveDaysMillis);
@@ -63,7 +64,14 @@ test("after", () => {
   );
 });
 test("before", () => {
-  expect(fiveDays.before(date1).getTime()).toBe(
+  expect(fiveDays.before(date2).getTime()).toBe(
     new Date(fiveDaysMillis).getTime()
   );
+});
+
+test("between", () => {
+  expect(Duration.between(epochDate, date1).millis).toBe(fiveDaysMillis);
+  expect(Duration.between(date1, date2).millis).toBe(fiveDaysMillis);
+  expect(Duration.between(date1, epochDate).millis).toBe(fiveDaysMillis * -1);
+  expect(Duration.between(date2, date1).millis).toBe(fiveDaysMillis * -1);
 });
