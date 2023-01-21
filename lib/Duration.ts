@@ -2,17 +2,6 @@ import { Day, Hour, Millisecond, Minute, Second } from "./Units";
 export class Duration {
   public constructor(private readonly milliseconds: number) {}
 
-  static milliseconds = (num: number) => new Duration(num);
-  static seconds = (num: number) => new Duration(Second.toMillis(num));
-  static minutes = (num: number) => new Duration(Minute.toMillis(num));
-  static hours = (num: number) => new Duration(Hour.toMillis(num));
-  static days = (num: number) => new Duration(Day.toMillis(num));
-
-  static between = (start: Date, end: Date) =>
-    Duration.milliseconds(end.getTime() - start.getTime());
-
-  static isDuration = (it: any): it is Duration => it.millis;
-
   public readonly add = (other: Duration | number) =>
     new Duration(
       this.milliseconds +
@@ -68,4 +57,16 @@ export class Duration {
     Duration.isDuration(other) && this.millis <= other.millis;
   public greaterThanOrEqual = (other: any) =>
     Duration.isDuration(other) && this.millis >= other.millis;
+
+
+  static milliseconds = (num: number) => new Duration(num);
+  static seconds = (num: number) => new Duration(Second.toMillis(num));
+  static minutes = (num: number) => new Duration(Minute.toMillis(num));
+  static hours = (num: number) => new Duration(Hour.toMillis(num));
+  static days = (num: number) => new Duration(Day.toMillis(num));
+
+  static between = (start: Date, end: Date) =>
+      Duration.milliseconds(end.getTime() - start.getTime());
+
+  static isDuration = (it: any): it is Duration => it.millis;
 }
