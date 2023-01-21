@@ -1,23 +1,26 @@
 import { Day, Hour, Millisecond, Minute, Second } from "./Units";
 export class Duration {
-  public constructor(private readonly milliseconds: number) {}
+  private readonly _milliseconds: number;
+  public constructor(milliseconds: number) {
+    this._milliseconds = milliseconds;
+  }
 
   public readonly add = (other: Duration | number) =>
     new Duration(
-      this.milliseconds +
-        (typeof other == "number" ? other : other.milliseconds)
+      this._milliseconds +
+        (typeof other == "number" ? other : other._milliseconds)
     );
   public readonly subtract = (other: Duration | number) =>
     new Duration(
-      this.milliseconds -
-        (typeof other == "number" ? other : other.milliseconds)
+      this._milliseconds -
+        (typeof other == "number" ? other : other._milliseconds)
     );
 
   public readonly multiply = (other: number) =>
-    new Duration(this.milliseconds * other);
+    new Duration(this._milliseconds * other);
 
   public readonly divide = (other: number) =>
-    new Duration(this.milliseconds / other);
+    new Duration(this._milliseconds / other);
 
   public readonly plus = this.add;
   public readonly minus = this.subtract;
@@ -25,26 +28,26 @@ export class Duration {
   public readonly over = this.divide;
 
   public readonly after = (date: Date = new Date()) =>
-    new Date(date.getTime() + this.milliseconds);
+    new Date(date.getTime() + this._milliseconds);
 
   public readonly before = (date: Date = new Date()) =>
-    new Date(date.getTime() - this.milliseconds);
+    new Date(date.getTime() - this._milliseconds);
 
   public get millis(): number {
-    return Millisecond.fromMillis(this.milliseconds);
+    return Millisecond.fromMillis(this._milliseconds);
   }
 
   public get seconds(): number {
-    return Second.fromMillis(this.milliseconds);
+    return Second.fromMillis(this._milliseconds);
   }
   public get minutes(): number {
-    return Minute.fromMillis(this.milliseconds);
+    return Minute.fromMillis(this._milliseconds);
   }
   public get hours(): number {
-    return Hour.fromMillis(this.milliseconds);
+    return Hour.fromMillis(this._milliseconds);
   }
   public get days(): number {
-    return Day.fromMillis(this.milliseconds);
+    return Day.fromMillis(this._milliseconds);
   }
 
   public equals = (other: any) =>
