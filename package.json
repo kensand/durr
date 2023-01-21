@@ -1,6 +1,6 @@
 {
   "name": "durr",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "description": "Typescript duration models and utilities",
   "repository": {
