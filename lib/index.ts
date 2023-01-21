@@ -1,2 +1,2 @@
 export { Duration } from "./Duration";
-export * as Units from "./Units";
+export * from "./Units";
