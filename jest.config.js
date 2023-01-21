@@ -1,3 +1,4 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   roots: ["lib"],
   transform: {
@@ -5,4 +6,5 @@ module.exports = {
   },
   testRegex: "^.+\\.test\\.ts$",
   moduleFileExtensions: ["ts", "js"],
+  testEnvironment: "node",
 };

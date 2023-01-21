@@ -58,7 +58,6 @@ export class Duration {
   public greaterThanOrEqual = (other: any) =>
     Duration.isDuration(other) && this.millis >= other.millis;
 
-
   static milliseconds = (num: number) => new Duration(num);
   static seconds = (num: number) => new Duration(Second.toMillis(num));
   static minutes = (num: number) => new Duration(Minute.toMillis(num));
@@ -66,7 +65,7 @@ export class Duration {
   static days = (num: number) => new Duration(Day.toMillis(num));
 
   static between = (start: Date, end: Date) =>
-      Duration.milliseconds(end.getTime() - start.getTime());
+    Duration.milliseconds(end.getTime() - start.getTime());
 
   static isDuration = (it: any): it is Duration => it.millis;
 }
