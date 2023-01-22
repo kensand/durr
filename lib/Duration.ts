@@ -1,26 +1,35 @@
-import { Day, Hour, Millisecond, Minute, Second } from "./Units";
-export class Duration {
-  private readonly _milliseconds: number;
-  public constructor(milliseconds: number) {
-    this._milliseconds = milliseconds;
+import { Day, Hour, Minute, Second } from "./Units";
+
+export interface IDuration {
+  readonly milliseconds: number;
+}
+
+export function isIDuration(it: any) {
+  return typeof it == "object" && typeof it.milliseconds == "number";
+}
+
+export class Duration implements IDuration {
+  public readonly milliseconds: number;
+  public constructor(props: IDuration) {
+    this.milliseconds = props.milliseconds;
   }
 
-  public readonly add = (other: Duration | number) =>
-    new Duration(
-      this._milliseconds +
-        (typeof other == "number" ? other : other._milliseconds)
+  public readonly add = (other: IDuration | number) =>
+    Duration.milliseconds(
+      this.milliseconds +
+        (typeof other == "number" ? other : other.milliseconds)
     );
-  public readonly subtract = (other: Duration | number) =>
-    new Duration(
-      this._milliseconds -
-        (typeof other == "number" ? other : other._milliseconds)
+  public readonly subtract = (other: IDuration | number) =>
+    Duration.milliseconds(
+      this.milliseconds -
+        (typeof other == "number" ? other : other.milliseconds)
     );
 
   public readonly multiply = (other: number) =>
-    new Duration(this._milliseconds * other);
+    Duration.milliseconds(this.milliseconds * other);
 
   public readonly divide = (other: number) =>
-    new Duration(this._milliseconds / other);
+    Duration.milliseconds(this.milliseconds / other);
 
   public readonly plus = this.add;
   public readonly minus = this.subtract;
@@ -28,47 +37,64 @@ export class Duration {
   public readonly over = this.divide;
 
   public readonly after = (date: Date = new Date()) =>
-    new Date(date.getTime() + this._milliseconds);
+    new Date(date.getTime() + this.milliseconds);
 
   public readonly before = (date: Date = new Date()) =>
-    new Date(date.getTime() - this._milliseconds);
+    new Date(date.getTime() - this.milliseconds);
 
   public get millis(): number {
-    return Millisecond.fromMillis(this._milliseconds);
+    return this.milliseconds;
   }
 
   public get seconds(): number {
-    return Second.fromMillis(this._milliseconds);
+    return Second.fromMillis(this.milliseconds);
   }
   public get minutes(): number {
-    return Minute.fromMillis(this._milliseconds);
+    return Minute.fromMillis(this.milliseconds);
   }
   public get hours(): number {
-    return Hour.fromMillis(this._milliseconds);
+    return Hour.fromMillis(this.milliseconds);
   }
   public get days(): number {
-    return Day.fromMillis(this._milliseconds);
+    return Day.fromMillis(this.milliseconds);
   }
 
-  public equals = (other: any) =>
-    Duration.isDuration(other) && this.millis == other.millis;
-  public lessThan = (other: any) =>
-    Duration.isDuration(other) && this.millis < other.millis;
-  public greaterThan = (other: any) =>
-    Duration.isDuration(other) && this.millis > other.millis;
-  public lessThanOrEqual = (other: any) =>
-    Duration.isDuration(other) && this.millis <= other.millis;
-  public greaterThanOrEqual = (other: any) =>
-    Duration.isDuration(other) && this.millis >= other.millis;
+  public readonly equals = (other: any) =>
+    isIDuration(other) && this.milliseconds == other.milliseconds;
+  public readonly lessThan = (other: IDuration) =>
+    this.milliseconds < other.milliseconds;
+  public readonly greaterThan = (other: IDuration) =>
+    this.milliseconds > other.milliseconds;
+  public readonly lessThanOrEqual = (other: IDuration) =>
+    this.milliseconds <= other.milliseconds;
+  public readonly greaterThanOrEqual = (other: IDuration) =>
+    this.milliseconds >= other.milliseconds;
 
-  static milliseconds = (num: number) => new Duration(num);
-  static seconds = (num: number) => new Duration(Second.toMillis(num));
-  static minutes = (num: number) => new Duration(Minute.toMillis(num));
-  static hours = (num: number) => new Duration(Hour.toMillis(num));
-  static days = (num: number) => new Duration(Day.toMillis(num));
+  public toJson(): IDuration {
+    return { milliseconds: this.milliseconds };
+  }
 
-  static between = (start: Date, end: Date) =>
+  static readonly fromJson = (it: any) => {
+    if (isIDuration(it)) {
+      return new Duration(it);
+    } else {
+      throw new Error("Unrecognized Type", {
+        cause: it,
+      });
+    }
+  };
+
+  static readonly milliseconds = (num: number) =>
+    new Duration({ milliseconds: num });
+  static readonly millis = (num: number) => new Duration({ milliseconds: num });
+  static readonly seconds = (num: number) =>
+    this.milliseconds(Second.toMillis(num));
+  static readonly minutes = (num: number) =>
+    this.milliseconds(Minute.toMillis(num));
+  static readonly hours = (num: number) =>
+    this.milliseconds(Hour.toMillis(num));
+  static readonly days = (num: number) => this.milliseconds(Day.toMillis(num));
+
+  static readonly between = (start: Date, end: Date) =>
     Duration.milliseconds(end.getTime() - start.getTime());
-
-  static isDuration = (it: any): it is Duration => it.millis;
 }

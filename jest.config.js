@@ -7,4 +7,6 @@ module.exports = {
   testRegex: "^.+\\.test\\.ts$",
   moduleFileExtensions: ["ts", "js"],
   testEnvironment: "node",
+  collectCoverage: true,
+  coverageProvider: "babel",
 };
